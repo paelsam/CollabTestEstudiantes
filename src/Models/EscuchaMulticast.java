@@ -40,6 +40,11 @@ public class EscuchaMulticast extends Thread {
                 ObjectInputStream oInputStream = new ObjectInputStream(new BufferedInputStream(byteArrayInputStream));
                 salida = (Examen) oInputStream.readObject();
                 oInputStream.close();
+                if (ControladorCliente.getIniciarTimer() == false) {
+                    ControladorCliente.iniciarCuentaRegresiva(salida.getTiempoDuracion());
+                    ControladorCliente.setInciarTimer(true);
+                }
+                ControladorCliente.setInciarTimer(true);
                 ControladorCliente.setExamen(salida);
                 ControladorCliente.getGuiCliente().setItems(salida.getPreguntas().size());
                 System.out.println(salida.getPreguntas());

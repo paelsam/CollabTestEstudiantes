@@ -102,7 +102,7 @@ public class GUICliente extends JFrame {
         pOeste.add(lTiempoRestanteText);
         pOeste.add(lTiempoRestante);
 
-        pEnunciado.setPreferredSize(new Dimension(500, this.getHeight()));
+        pEnunciado.setPreferredSize(new Dimension(450, this.getHeight()));
         pEnunciado.add(lEnunciado);
         pEnunciado.add(tADecripcionPregunta);
         pEnunciado.add(pPreguntas);
@@ -134,7 +134,6 @@ public class GUICliente extends JFrame {
         }
     }
 
-
     public void addItems(String[] preguntas) {
         for (String numPregunta : preguntas) {
             listaPreguntas.addItem(numPregunta);
@@ -156,7 +155,7 @@ public class GUICliente extends JFrame {
         bResponder.setEnabled(false);
     }
 
-    public void setTADecripcionPregunta(String descripcion)  {
+    public void setTADecripcionPregunta(String descripcion) {
         tADecripcionPregunta.setText(descripcion);
     }
 
@@ -171,8 +170,8 @@ public class GUICliente extends JFrame {
             if (e.getSource() == bObtener) {
                 ControladorCliente.getIndicePreguntaActual(listaPreguntas.getSelectedItem().toString());
                 ControladorCliente.mostrarPregunta();
-            } 
-            if ( e.getSource() == bResponder ) {
+            }
+            if (e.getSource() == bResponder) {
                 ControladorCliente.responderPregunta(grupoOpciones.getSelection().getActionCommand());
             }
         }
