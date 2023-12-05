@@ -1,11 +1,9 @@
 
-import Views.GUICliente;
+import Controllers.ControladorCliente;
 
 public class App {
 
     public static void main(String[] args) {
-        // Crear una instancia de GUICliente
-        GUICliente GUICliente = new GUICliente();
-        GUICliente.iniciarComponentes();
+        ControladorCliente controladorCliente = new ControladorCliente();
     }
 }

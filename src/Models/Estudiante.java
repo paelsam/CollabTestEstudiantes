@@ -90,10 +90,4 @@ public class Estudiante {
             System.out.println("Error al mandar datos al servidor: " + e);
         }
     }
-
-    public static void main(String[] args) {
-        Estudiante appEstudiante = new Estudiante("200.0.0.1", 10000);
-        appEstudiante.ejecutarSocketEstudiante();
-    }
-    
 }

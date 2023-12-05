@@ -104,7 +104,6 @@ public class GUICliente extends JFrame {
 
         pack();
         setVisible(true);
-
     }
 
     public void crearJRadioButtons(String[] opciones) {
@@ -122,6 +121,7 @@ public class GUICliente extends JFrame {
         }
     }
 
-
-   
+    public void setTiempoRestante(String tiempo) {
+        lTiempoRestante.setText(tiempo);
+    }
 }
