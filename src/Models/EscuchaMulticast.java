@@ -8,6 +8,8 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 
+import Controllers.ControladorCliente;
+
 public class EscuchaMulticast extends Thread {
     MulticastSocket multicastSocket;
     InetAddress inetAddress;
@@ -38,11 +40,12 @@ public class EscuchaMulticast extends Thread {
                 ObjectInputStream oInputStream = new ObjectInputStream(new BufferedInputStream(byteArrayInputStream));
                 salida = (Examen) oInputStream.readObject();
                 oInputStream.close();
+                ControladorCliente.setExamen(salida);
+                ControladorCliente.getGuiCliente().setItems(salida.getPreguntas().size());
                 System.out.println(salida.getPreguntas());
-
             } catch (IOException e) {
                 System.out.println("Error al recibir datos: " + e);
-                cerrarMulti();
+                cerrarMulticast();
                 break;
             } catch (ClassNotFoundException e) {
                 System.out.println("Error al recibir datos: " + e);
@@ -51,7 +54,7 @@ public class EscuchaMulticast extends Thread {
         }
     }
 
-    public void cerrarMulti() {
+    public void cerrarMulticast() {
         try {
             multicastSocket.leaveGroup(inetAddress);
             multicastSocket.close();

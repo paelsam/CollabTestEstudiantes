@@ -86,7 +86,9 @@ public class Pregunta implements Serializable {
         return "Enunciado: " + this.enunciado.trim() + "\n" 
         + "Descripción: " + this.descripcion + "\n"
         + "Opciones: " + this.listaOpciones + "\n"
-        + "Opción correcta: " + this.opcionCorrecta + "\n";
+        + "Opción correcta: " + this.opcionCorrecta + "\n"
+        + "Es Correcta?: " + this.esCorrecta + "\n"
+        + "Estado preginta: " + this.getEstado() + "\n";
 
     }
 

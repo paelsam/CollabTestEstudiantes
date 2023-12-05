@@ -90,4 +90,8 @@ public class Estudiante {
             System.out.println("Error al mandar datos al servidor: " + e);
         }
     }
+
+    public EscuchaMulticast getEscuchaMulticast() {
+        return this.escuchaMulticast;
+    }
 }
