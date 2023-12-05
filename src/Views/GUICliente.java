@@ -19,6 +19,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -130,7 +131,8 @@ public class GUICliente extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == bObtener) {
-
+                cont.sacarIndicePreguntaActual(listaPreguntas.getSelectedItem().toString());
+                mostrarPregunta();
             }
         }
 
@@ -162,6 +164,24 @@ public class GUICliente extends JFrame {
 
         }
 
+    }
+
+    public void mostrarPregunta() {
+
+        mostrar(cont.getPreguntaActual().getEnunciado() + "\n" + cont.getPreguntaActual().getDescripcion() +
+                "\nRESPUESTAS:" + "\nA: " + cont.getPreguntaActual().getListaOpciones().get(0) + "\nB: "
+                + cont.getPreguntaActual().getListaOpciones().get(1)
+                + "\nC: " + cont.getPreguntaActual().getListaOpciones().get(2) + "\nD: "
+                + cont.getPreguntaActual().getListaOpciones().get(3));
+
+        List<String> respuestas = cont.getPreguntaActual().getListaOpciones();
+        for (String respuesta : respuestas) {
+
+        }
+    }
+
+    public void mostrar(String mostrar) {
+        tADecripcionPregunta.setText(mostrar);
     }
 
 }

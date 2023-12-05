@@ -13,10 +13,6 @@ public class Controlador {
     private GUICliente gui;
     private Estudiante con;
 
-    public Controlador() {
-        this.examen = new Examen("caca", 40, "src\\assets\\preguntas1.txt");
-    }
-
     public Controlador(String HOST, int PORT) {
         this.examen = new Examen("caca", 40, "src\\assets\\preguntas1.txt");
 
@@ -33,7 +29,7 @@ public class Controlador {
         return examen;
     }
 
-    public void sacarPreguntaActual(String i) {
+    public void sacarIndicePreguntaActual(String i) {
         indicePreguntaActual = Integer.parseInt(i);
     }
 
