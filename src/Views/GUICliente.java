@@ -38,7 +38,7 @@ public class GUICliente extends JFrame {
 
     JTextArea tADecripcionPregunta;
     JRadioButton[] rbOpciones;
-    ButtonGroup grupoOpciones;
+    public ButtonGroup grupoOpciones;
 
     JButton bObtener, bCancelar, bResponder;
 
@@ -123,6 +123,7 @@ public class GUICliente extends JFrame {
 
         GestionEventos ev = new GestionEventos();
         bObtener.addActionListener(ev);
+        bResponder.addActionListener(ev);
 
     }
 
@@ -133,6 +134,14 @@ public class GUICliente extends JFrame {
             if (e.getSource() == bObtener) {
                 cont.sacarIndicePreguntaActual(listaPreguntas.getSelectedItem().toString());
                 mostrarPregunta();
+                setRadioButtons();
+            }
+
+            if (e.getSource() == bResponder) {
+                // saca el texto de la seleccion del radio Button y llama a la funcion guardar
+                // respuesta para modificar el examen.
+                cont.GuardarRespuesta(grupoOpciones.getSelection().getActionCommand());
+                // if(cont.getPreguntaActual().verificarOpcio))
             }
         }
 
@@ -166,18 +175,20 @@ public class GUICliente extends JFrame {
 
     }
 
+    public void setRadioButtons() {
+        List<String> listadoOpciones = cont.getPreguntaActual().getListaOpciones();
+        for (int i = 0; i < listadoOpciones.size(); i++) {
+            rbOpciones[i].setText(listadoOpciones.get(i));
+            rbOpciones[i].setActionCommand(listadoOpciones.get(i));
+        }
+    }
+
     public void mostrarPregunta() {
 
-        mostrar(cont.getPreguntaActual().getEnunciado() + "\n" + cont.getPreguntaActual().getDescripcion() +
-                "\nRESPUESTAS:" + "\nA: " + cont.getPreguntaActual().getListaOpciones().get(0) + "\nB: "
-                + cont.getPreguntaActual().getListaOpciones().get(1)
-                + "\nC: " + cont.getPreguntaActual().getListaOpciones().get(2) + "\nD: "
-                + cont.getPreguntaActual().getListaOpciones().get(3));
+        mostrar(cont.getPreguntaActual().getEnunciado() + "\n" + cont.getPreguntaActual().getDescripcion());
 
-        List<String> respuestas = cont.getPreguntaActual().getListaOpciones();
-        for (String respuesta : respuestas) {
+        setItems(cont.getExamen().getPreguntas());
 
-        }
     }
 
     public void mostrar(String mostrar) {

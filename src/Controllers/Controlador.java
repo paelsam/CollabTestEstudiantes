@@ -1,5 +1,7 @@
 package Controllers;
 
+import java.io.IOException;
+
 import Models.Estudiante;
 import Models.Examen;
 import Models.Pregunta;
@@ -14,10 +16,10 @@ public class Controlador {
     private Estudiante con;
 
     public Controlador(String HOST, int PORT) {
-        this.examen = new Examen("caca", 40, "src\\assets\\preguntas1.txt");
-
-        this.gui = new GUICliente(this);
+        // this.examen = new Examen("caca", 40, "src\\assets\\preguntas1.txt");
         this.con = new Estudiante(HOST, PORT, this);
+        this.gui = new GUICliente(this);
+        con.ejecutarSocketEstudiante();
 
     }
 
@@ -34,12 +36,20 @@ public class Controlador {
     }
 
     public void GuardarRespuesta(String respuesta) {
-        if (examen.getPreguntas().get(indicePreguntaActual).getOpcionCorrecta().equals(respuesta)) {
-
-            examen.getPreguntas().get(indicePreguntaActual).setEstado(2);
+        if (examen.getPreguntas().get(indicePreguntaActual).verificarOpcion(respuesta)) {
+            examen.getPreguntas().get(indicePreguntaActual).setEsCorrecta(true);
 
         }
-
+        examen.getPreguntas().get(indicePreguntaActual).setEstado(2);
+        System.out.println(
+                "---------------------------------\n" + examen.getPreguntas().get(indicePreguntaActual).getEstado()
+                        + "\n------------------------------------");
+        try {
+            con.enviarExamen(examen);
+        } catch (IOException e) {
+            System.out.println("error al enviar el examen desde GuardarRespuesta");
+        }
+        examen.getPreguntas().get(indicePreguntaActual).setEsCorrecta(false);
     }
 
     public void cambiarEstadoDePregunta(int estado) {

@@ -44,6 +44,7 @@ public class EscuchaMulticast extends Thread {
                 oInputStream.close();
                 cont.setExamen(salida);
                 cont.getGui().setItems(salida.getPreguntas());
+
                 System.out.println(salida.getPreguntas());
 
             } catch (IOException e) {

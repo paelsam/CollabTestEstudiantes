@@ -23,7 +23,6 @@ public class Estudiante {
         this.cont = cont;
         this.HOST = HOST;
         this.PORT = PORT;
-        ejecutarSocketEstudiante();
 
     }
 
