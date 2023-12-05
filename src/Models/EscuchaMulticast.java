@@ -8,11 +8,15 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 
+import Controllers.Controlador;
+
 public class EscuchaMulticast extends Thread {
     MulticastSocket multicastSocket;
     InetAddress inetAddress;
+    Controlador cont;
 
-    public EscuchaMulticast() {
+    public EscuchaMulticast(Controlador cont) {
+        this.cont = cont;
         try {
             System.out.println("Iniciando escucha del multicast....");
             this.multicastSocket = new MulticastSocket(9999);
@@ -38,6 +42,8 @@ public class EscuchaMulticast extends Thread {
                 ObjectInputStream oInputStream = new ObjectInputStream(new BufferedInputStream(byteArrayInputStream));
                 salida = (Examen) oInputStream.readObject();
                 oInputStream.close();
+                cont.setExamen(salida);
+                cont.getGui().setItems(salida.getPreguntas());
                 System.out.println(salida.getPreguntas());
 
             } catch (IOException e) {
