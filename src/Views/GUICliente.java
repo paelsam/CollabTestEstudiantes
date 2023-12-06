@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import Controllers.ControladorCliente;
@@ -21,38 +22,35 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.List;
 
 public class GUICliente extends JFrame {
 
-    JPanel pNorte, pOpciones, pEnunciado, pPreguntas, pOeste;
+    JPanel pNorte, pOpciones, pEnunciado, pPreguntas, pOeste, pResultado;
 
     JLabel lOpcionA, lOpcionB, lOpcionC, lOpcionD;
-    JLabel lListaPreguntas, lEnunciado;
-
-    public JComboBox<String> getListaPreguntas() {
-        return listaPreguntas;
-    }
+    JLabel lListaPreguntas, lEnunciado, lResultados;
 
     JLabel lTiempoRestanteText;
     JLabel lTiempoRestante;
 
-    private JComboBox<String> listaPreguntas;
+    JComboBox<String> listaPreguntas;
+    JScrollPane scrollPanelResultados;
 
-    JTextArea tADecripcionPregunta;
+    JTextArea tADecripcionPregunta, tADecripcionResultados;
     JRadioButton[] rbOpciones;
+    ButtonGroup grupoOpciones;
 
-    private ButtonGroup grupoOpciones;
-
-    JButton bObtener, bCancelar, bResponder;
+    JButton bObtener, bCancelar, bResponder, bCerrarVentana;
 
     public GUICliente() {
         setSize(700, 500);
         setTitle("CollabTest: Estudiantes");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
+        setFocusable(true);
     }
 
     public void iniciarComponentes() {
@@ -121,33 +119,40 @@ public class GUICliente extends JFrame {
         EventListener evento = new EventListener();
         bObtener.addActionListener(evento);
         bResponder.addActionListener(evento);
-        bCancelar.addActionListener(evento);
+        bCancelar.setFocusable(false);
+        bResponder.setFocusable(false);
+        listaPreguntas.setFocusable(false);
+        this.addKeyListener(evento);
 
-        listaPreguntas.addItemListener(new ItemListener() {
+        pack();
+        setVisible(true);
+    }
 
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                // int indicePreguntaActual = ControladorCliente.getIndicePreguntaActual();
+    public void iniciarComponentesResultados() {
 
-                if (e.getStateChange() == e.SELECTED) {
-                    if (ControladorCliente.verificarEstadoLibre(listaPreguntas.getSelectedIndex())) {
-                        habilitarDesabilitarBObtener(true);
-                        habilitarDesabilitarBResponder(true);
-                    } else if (!ControladorCliente.verificarEstadoLibre(listaPreguntas.getSelectedIndex())) {
-                        habilitarDesabilitarBObtener(false);
-                        System.out.println(ControladorCliente.verificarEstadoLibre(listaPreguntas.getSelectedIndex()));
-                        System.out.println("entro");
-                        // habilitarDesabilitarBResponder(false);
+        this.getContentPane().remove(pOeste);
+        this.getContentPane().remove(pEnunciado);
+        this.getContentPane().remove(bResponder);
 
-                    } else {
-                        habilitarDesabilitarBResponder(true);
-                    }
-                }
+        lResultados = new JLabel("Resultados");
+        tADecripcionResultados = new JTextArea(20, 40);
+        tADecripcionResultados.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-            }
+        scrollPanelResultados = new JScrollPane(tADecripcionResultados);
 
-        });
+        pResultado = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
 
+        pResultado.setPreferredSize(new Dimension(450, this.getHeight()));
+        pResultado.add(lResultados);
+        pResultado.add(scrollPanelResultados);
+
+        bCerrarVentana = new JButton("SALIR DEL EXAMEN");
+        pResultado.add(bCerrarVentana, BorderLayout.SOUTH);
+
+        add(pResultado, BorderLayout.CENTER);
+
+        EventListener evento = new EventListener();
+        bCerrarVentana.addActionListener(evento);
         pack();
         setVisible(true);
     }
@@ -164,6 +169,7 @@ public class GUICliente extends JFrame {
         for (int i = 0; i < opciones.length; i++) {
             rbOpciones[i].setText(opciones[i]);
             rbOpciones[i].setActionCommand(opciones[i]);
+            rbOpciones[i].setFocusable(false);
         }
     }
 
@@ -192,40 +198,52 @@ public class GUICliente extends JFrame {
         tADecripcionPregunta.setText(descripcion);
     }
 
+    public void setTADecripcionResultados(String descripcion) {
+        tADecripcionResultados.setText(descripcion);
+    }
+
     public void setLEnunciado(String enunciado) {
         lEnunciado.setText("Enunciado: " + enunciado);
     }
 
-    public void habilitarDesabilitarBObtener(boolean bool) {
-        bObtener.setEnabled(bool);
-    }
-
-    public void habilitarDesabilitarBResponder(boolean bool) {
-        bResponder.setEnabled(bool);
-    }
-
-    public class EventListener implements ActionListener {
+    public class EventListener implements ActionListener, KeyListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == bObtener) {
                 ControladorCliente.getIndicePreguntaActual(listaPreguntas.getSelectedItem().toString());
                 ControladorCliente.mostrarPregunta();
-                ControladorCliente.cambiarPreguntaAOcupada();
-                System.out.println(ControladorCliente.getIndicePreguntaActual());
-                listaPreguntas.setEnabled(false);
-
             }
             if (e.getSource() == bResponder) {
                 ControladorCliente.responderPregunta(grupoOpciones.getSelection().getActionCommand());
-                habilitarDesabilitarBResponder(false);
-                listaPreguntas.setEnabled(true);
             }
-            if (e.getSource() == bCancelar) {
-                ControladorCliente.liberarPreguntaOcupada();
-                habilitarDesabilitarBObtener(true);
-                listaPreguntas.setEnabled(true);
+            if (e.getSource() == bCerrarVentana) {
+                dispose();
             }
+        }
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            if (e.isAltDown() && e.getKeyCode() == KeyEvent.VK_R) {
+                System.out.println("Se presionó Alt+R");
+                ControladorCliente.responderPregunta(grupoOpciones.getSelection().getActionCommand());
+                ControladorCliente.cambiarEstadoPregunta(2);
+            }
+
+            if (e.getKeyChar() == 'o' || e.getKeyChar() == 'O') {
+                System.out.println("Se presionó la tecla 'O'");
+                ControladorCliente.getIndicePreguntaActual(listaPreguntas.getSelectedItem().toString());
+                ControladorCliente.mostrarPregunta();
+                ControladorCliente.cambiarEstadoPregunta(1);
+            }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
 
         }
     }

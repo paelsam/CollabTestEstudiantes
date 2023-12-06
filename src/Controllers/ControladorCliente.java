@@ -11,20 +11,11 @@ import Views.GUICliente;
 
 public class ControladorCliente {
 
-    public static Estudiante getEstudiante() {
-        return estudiante;
-    }
-
     private static Estudiante estudiante;
     private static GUICliente guiCliente;
     private static Examen examen;
     private static Timer temporizador;
     private static int indicePreguntaActual;
-
-    public static int getIndicePreguntaActual() {
-        return indicePreguntaActual;
-    }
-
     private static boolean iniciarTimer;
 
     // Variables para el temporizador
@@ -76,14 +67,13 @@ public class ControladorCliente {
         temporizador.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
+                if (examen.estaTerminado()) {
+                    terminarExamen();
+                }
                 if (!(minutosRestantes == 0 && segundosRestantes == 0)) {
                     tiempoRestanteTexto();
                 } else {
-                    // Modificar esto
-                    guiCliente.setTiempoRestante("00:00");
-                    temporizador.cancel();
-                    temporizador.purge();
-                    System.out.println("Fin del examen");
+                    terminarExamen();
                 }
             }
 
@@ -100,6 +90,18 @@ public class ControladorCliente {
 
     public static void getIndicePreguntaActual(String index) {
         indicePreguntaActual = Integer.parseInt(index) - 1;
+    }
+
+    public static void mostrarResultados() {
+        guiCliente.iniciarComponentesResultados();
+        guiCliente.setTADecripcionResultados(examen.toString());
+    }
+
+    public static void terminarExamen() {
+        guiCliente.setTiempoRestante("00:00");
+        temporizador.cancel();
+        temporizador.purge();
+        mostrarResultados();
     }
 
     public static void mostrarPregunta() {
@@ -140,57 +142,4 @@ public class ControladorCliente {
     public static boolean getIniciarTimer() {
         return ControladorCliente.iniciarTimer;
     }
-
-    public static boolean verificarPreguntaActual() {
-        if (guiCliente.getListaPreguntas().getSelectedIndex() == indicePreguntaActual) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public static void verificarEstadoPreguntas() {
-        String estado = examen.getPreguntas().get(indicePreguntaActual).getEstado();
-        if (estado.equals("RESPONDIDA") || estado.equals("OCUPADA")) {
-            guiCliente.habilitarDesabilitarBObtener(false);
-
-        }
-    }
-
-    public static boolean verificarEstadoLibre(int indice) {
-        boolean estado = false;
-        for (int i = 0; i < examen.getPreguntas().size(); i++) {
-            if (i == indice) {
-                if (examen.getPreguntas().get(i).getEstadoIndex() == 0) {
-                    estado = true;
-                }
-            }
-
-        }
-        return estado;
-    }
-
-    public static void cambiarPreguntaAOcupada() {
-        cambiarEstadoPregunta(1);
-        try {
-            estudiante.enviarExamen(examen);
-        } catch (IOException e) {
-            System.out.println("error al enviar examen desde CambiarPreguntaAOcupada");
-            e.printStackTrace();
-
-        }
-    }
-
-    public static void liberarPreguntaOcupada() {
-        cambiarEstadoPregunta(0);
-        try {
-            estudiante.enviarExamen(examen);
-        } catch (IOException e) {
-            System.out.println("error al enviar examen desde LiberarPreguntaOcupada");
-            e.printStackTrace();
-
-        }
-
-    }
-
 }
