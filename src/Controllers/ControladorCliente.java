@@ -89,12 +89,17 @@ public class ControladorCliente {
         guiCliente.setTiempoRestante("00:00");
         temporizador.cancel();
         temporizador.purge();
+        examen.setNotaFinal(examen.calcularNotaFinal());
+        try {
+            estudiante.enviarExamen(examen);
+        } catch (IOException e) {
+            System.out.println("Error: " + e);
+        }
         mostrarResultados();
     }
 
     public static void mostrarResultados() {
-        guiCliente.iniciarComponentesResultados();
-        guiCliente.setTADescripcionPregunta(examen.toString());
+        guiCliente.iniciarComponentesResultados(examen.toString());
     }
 
     public Examen getExamen() {

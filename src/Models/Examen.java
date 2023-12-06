@@ -144,7 +144,8 @@ public class Examen implements Serializable {
             continue;
         }
         // Redondeado a dos decimales
-        return (float) Math.round(((preguntasCorrectas * 5) / this.preguntas.size()) * 100) / 100;
+        System.out.println(((preguntasCorrectas * 5) / this.preguntas.size()));
+        return (float) ((preguntasCorrectas * 5) / this.preguntas.size());
     }
 
     public void setNotaFinal(float notaFinal) {

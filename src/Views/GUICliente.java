@@ -106,6 +106,7 @@ public class GUICliente extends JFrame {
         lEstadoPregunta = new JLabel("");
         lEstadoPregunta.setFont(new Font("Arial", Font.BOLD, 24));
         lEstadoPregunta.setBackground(blanco);
+        lEstadoPregunta.setForeground(blanco);
 
         pPreguntas.add(rbOpciones[0]);
         pPreguntas.add(rbOpciones[1]);
@@ -162,7 +163,7 @@ public class GUICliente extends JFrame {
         setVisible(true);
     }
 
-    public void iniciarComponentesResultados() {
+    public void iniciarComponentesResultados(String informe) {
 
         this.getContentPane().remove(pOeste);
         this.getContentPane().remove(pEnunciado);
@@ -172,6 +173,7 @@ public class GUICliente extends JFrame {
         lResultados.setForeground(blanco);
         tADescripcionResultados = new JTextArea(20, 40);
         tADescripcionResultados.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        tADescripcionResultados.setText(informe);
 
         scrollPanelResultados = new JScrollPane(tADescripcionResultados);
 
@@ -291,6 +293,9 @@ public class GUICliente extends JFrame {
                 ControladorCliente.liberarPreguntaOcupada();
                 habilitarDesabilitarBObtener(true);
                 listaPreguntas.setEnabled(true);
+            }
+            if (e.getSource() == bCerrarVentana) {
+                dispose();
             }
 
             cambiarLabelEstadoPregunta(listaPreguntas.getSelectedIndex());
