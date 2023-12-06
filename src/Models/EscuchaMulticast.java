@@ -47,6 +47,9 @@ public class EscuchaMulticast extends Thread {
                 ControladorCliente.setInciarTimer(true);
                 ControladorCliente.setExamen(salida);
                 ControladorCliente.getGuiCliente().setItems(salida.getPreguntas().size());
+                ControladorCliente.getGuiCliente().getListaPreguntas()
+                        .setSelectedIndex(ControladorCliente.getIndicePreguntaActual());
+                ;
                 // ControladorCliente.verificarEstadoPreguntas();
                 // System.out.println(salida.getPreguntas());
             } catch (IOException e) {

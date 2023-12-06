@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import Controllers.ControladorCliente;
@@ -15,7 +16,6 @@ import Controllers.ControladorCliente;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Event;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -23,33 +23,36 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.List;
 
 public class GUICliente extends JFrame {
 
-    JPanel pNorte, pOpciones, pEnunciado, pPreguntas, pOeste;
+    private static Color background = new Color(10, 13, 34);
+    private static Color azul = new Color(41, 107, 170);
+    private static Color Verde = new Color(3, 166, 107);
+    private static Color blanco = new Color(252, 255, 255);
+    private static Color Amarillo = new Color(243, 172, 0);
+    private static Color Rojo = new Color(200, 25, 34);
 
-    JLabel lOpcionA, lOpcionB, lOpcionC, lOpcionD;
-    JLabel lListaPreguntas, lEnunciado;
+    JPanel pNorte, pOpciones, pEnunciado, pPreguntas, pOeste, pResultado;
 
-    public JComboBox<String> getListaPreguntas() {
-        return listaPreguntas;
-    }
+    JLabel lOpcionesText;
+    JLabel lListaPreguntas, lEnunciado, lEstadoPregunta, lResultados;
 
     JLabel lTiempoRestanteText;
     JLabel lTiempoRestante;
 
     private JComboBox<String> listaPreguntas;
 
-    JTextArea tADecripcionPregunta;
+    JScrollPane scrollPanelResultados;
+    JTextArea tADecripcionPregunta, tADescripcionResultados;
     JRadioButton[] rbOpciones;
 
     private ButtonGroup grupoOpciones;
 
-    JButton bObtener, bCancelar, bResponder;
+    JButton bObtener, bCancelar, bResponder, bCerrarVentana;
 
     public GUICliente() {
-        setSize(700, 500);
+        setSize(800, 500);
         setTitle("CollabTest: Estudiantes");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
@@ -59,22 +62,23 @@ public class GUICliente extends JFrame {
         lListaPreguntas = new JLabel("Preguntas: ");
         listaPreguntas = new JComboBox<>();
         listaPreguntas.setPreferredSize(new Dimension(150, 30));
-        addItems(new String[] { "1", "2", "3" });
+        lListaPreguntas.setForeground(blanco);
 
         // Label de opciones
-        lOpcionA = new JLabel("a.");
-        lOpcionB = new JLabel("b.");
-        lOpcionC = new JLabel("c.");
-        lOpcionD = new JLabel("d.");
+        lOpcionesText = new JLabel("Opciones: ");
+        lOpcionesText.setForeground(blanco);
+        lOpcionesText.setFont(new Font("Arial", Font.BOLD, 14));
+        lOpcionesText.setPreferredSize(new Dimension(500, 20));
 
         grupoOpciones = new ButtonGroup();
         crearJRadioButtons();
-        setRadioButtons(new String[] { "Ajá", "Ejé", "Ilo", "Ola" });
 
         bObtener = new JButton("Obtener");
-        bObtener.setBackground(Color.GREEN);
+        bObtener.setBackground(Verde);
+        bObtener.setForeground(blanco);
         bCancelar = new JButton("Cancelar");
-        bCancelar.setBackground(Color.RED);
+        bCancelar.setBackground(Rojo);
+        bCancelar.setForeground(blanco);
 
         bResponder = new JButton("Responder");
         bResponder.setPreferredSize(new Dimension(200, 30));
@@ -83,22 +87,29 @@ public class GUICliente extends JFrame {
         lTiempoRestanteText = new JLabel("Tiempo restante:");
         lTiempoRestante = new JLabel("00:00");
         lTiempoRestante.setFont(new Font("Arial", Font.BOLD, 24));
+        lTiempoRestante.setForeground(blanco);
+        lTiempoRestanteText.setForeground(blanco);
 
         lEnunciado = new JLabel("Enunciado: ");
         tADecripcionPregunta = new JTextArea(20, 40);
         tADecripcionPregunta.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        lEnunciado.setForeground(Amarillo);
 
         pOeste = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         pEnunciado = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
         pPreguntas = new JPanel(new GridLayout(4, 2));
 
-        pPreguntas.add(lOpcionA);
+        pOeste.setBackground(background);
+        pEnunciado.setBackground(background);
+        pPreguntas.setBackground(background);
+
+        lEstadoPregunta = new JLabel("");
+        lEstadoPregunta.setFont(new Font("Arial", Font.BOLD, 24));
+        lEstadoPregunta.setBackground(blanco);
+
         pPreguntas.add(rbOpciones[0]);
-        pPreguntas.add(lOpcionB);
         pPreguntas.add(rbOpciones[1]);
-        pPreguntas.add(lOpcionC);
         pPreguntas.add(rbOpciones[2]);
-        pPreguntas.add(lOpcionD);
         pPreguntas.add(rbOpciones[3]);
 
         pOeste.setPreferredSize(new Dimension(250, 400));
@@ -108,10 +119,12 @@ public class GUICliente extends JFrame {
         pOeste.add(bCancelar);
         pOeste.add(lTiempoRestanteText);
         pOeste.add(lTiempoRestante);
+        pOeste.add(lEstadoPregunta);
 
         pEnunciado.setPreferredSize(new Dimension(450, this.getHeight()));
         pEnunciado.add(lEnunciado);
         pEnunciado.add(tADecripcionPregunta);
+        pEnunciado.add(lOpcionesText);
         pEnunciado.add(pPreguntas);
 
         add(pOeste, BorderLayout.WEST);
@@ -127,26 +140,56 @@ public class GUICliente extends JFrame {
 
             @Override
             public void itemStateChanged(ItemEvent e) {
-                // int indicePreguntaActual = ControladorCliente.getIndicePreguntaActual();
-
-                if (e.getStateChange() == e.SELECTED) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
                     if (ControladorCliente.verificarEstadoLibre(listaPreguntas.getSelectedIndex())) {
                         habilitarDesabilitarBObtener(true);
                         habilitarDesabilitarBResponder(true);
                     } else if (!ControladorCliente.verificarEstadoLibre(listaPreguntas.getSelectedIndex())) {
                         habilitarDesabilitarBObtener(false);
                         System.out.println(ControladorCliente.verificarEstadoLibre(listaPreguntas.getSelectedIndex()));
-                        System.out.println("entro");
-                        // habilitarDesabilitarBResponder(false);
-
                     } else {
                         habilitarDesabilitarBResponder(true);
                     }
+
+                    cambiarLabelEstadoPregunta(listaPreguntas.getSelectedIndex());
                 }
 
             }
 
         });
+
+        pack();
+        setVisible(true);
+    }
+
+    public void iniciarComponentesResultados() {
+
+        this.getContentPane().remove(pOeste);
+        this.getContentPane().remove(pEnunciado);
+        this.getContentPane().remove(bResponder);
+
+        lResultados = new JLabel("Resultados");
+        lResultados.setForeground(blanco);
+        tADescripcionResultados = new JTextArea(20, 40);
+        tADescripcionResultados.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+        scrollPanelResultados = new JScrollPane(tADescripcionResultados);
+
+        pResultado = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+
+        pResultado.setPreferredSize(new Dimension(450, this.getHeight()));
+        pResultado.add(lResultados);
+        pResultado.add(scrollPanelResultados);
+
+        bCerrarVentana = new JButton("SALIR DEL EXAMEN");
+        bCerrarVentana.setPreferredSize(new Dimension(200, 30));
+        bCerrarVentana.setBackground(Color.ORANGE);
+        pResultado.add(bCerrarVentana, BorderLayout.SOUTH);
+
+        add(pResultado, BorderLayout.CENTER);
+
+        EventListener evento = new EventListener();
+        bCerrarVentana.addActionListener(evento);
 
         pack();
         setVisible(true);
@@ -184,6 +227,10 @@ public class GUICliente extends JFrame {
         }
     }
 
+    public void setTADescripcionPregunta(String descripcion) {
+        tADecripcionPregunta.setText(descripcion);
+    }
+
     public void toggleBResponder() {
         bResponder.setEnabled(false);
     }
@@ -198,10 +245,29 @@ public class GUICliente extends JFrame {
 
     public void habilitarDesabilitarBObtener(boolean bool) {
         bObtener.setEnabled(bool);
+        if (bool) {
+            cambiarLabelEstadoPregunta(1);
+        }
+    }
+
+    public JComboBox<String> getListaPreguntas() {
+        return listaPreguntas;
     }
 
     public void habilitarDesabilitarBResponder(boolean bool) {
         bResponder.setEnabled(bool);
+    }
+
+    public void cambiarLabelEstadoPregunta(int indice) {
+        int estado = ControladorCliente.getPreguntaPorIndice(indice).getEstadoIndex();
+
+        if (estado == 0) {
+            lEstadoPregunta.setText("LIBRE");
+        } else if (estado == 1) {
+            lEstadoPregunta.setText("OCUPADA");
+        } else if (estado == 2) {
+            lEstadoPregunta.setText("RESPONDIDA");
+        }
     }
 
     public class EventListener implements ActionListener {
@@ -226,6 +292,8 @@ public class GUICliente extends JFrame {
                 habilitarDesabilitarBObtener(true);
                 listaPreguntas.setEnabled(true);
             }
+
+            cambiarLabelEstadoPregunta(listaPreguntas.getSelectedIndex());
 
         }
     }

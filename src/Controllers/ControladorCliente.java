@@ -31,9 +31,6 @@ public class ControladorCliente {
     private static int minutosRestantes, segundosRestantes;
 
     public ControladorCliente() {
-        // Pruebas
-        // examen = new Examen("caca", 40, "src\\assets\\preguntas1.txt");
-        // Fin Pruebas
 
         estudiante = new Estudiante("200.0.0.1", 10000);
         guiCliente = new GUICliente();
@@ -41,7 +38,6 @@ public class ControladorCliente {
         guiCliente.iniciarComponentes();
         estudiante.ejecutarSocketEstudiante();
         iniciarTimer = false;
-        // iniciarCuentaRegresiva(examen.getTiempoDuracion());
     }
 
     public static void tiempoRestanteTexto() {
@@ -76,18 +72,29 @@ public class ControladorCliente {
         temporizador.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
+                if (examen.estaTerminado()) {
+                    terminarExamen();
+                }
                 if (!(minutosRestantes == 0 && segundosRestantes == 0)) {
                     tiempoRestanteTexto();
                 } else {
-                    // Modificar esto
-                    guiCliente.setTiempoRestante("00:00");
-                    temporizador.cancel();
-                    temporizador.purge();
-                    System.out.println("Fin del examen");
+                    terminarExamen();
                 }
             }
 
         }, 0, 1000);
+    }
+
+    public static void terminarExamen() {
+        guiCliente.setTiempoRestante("00:00");
+        temporizador.cancel();
+        temporizador.purge();
+        mostrarResultados();
+    }
+
+    public static void mostrarResultados() {
+        guiCliente.iniciarComponentesResultados();
+        guiCliente.setTADescripcionPregunta(examen.toString());
     }
 
     public Examen getExamen() {
@@ -179,6 +186,11 @@ public class ControladorCliente {
             e.printStackTrace();
 
         }
+    }
+
+    public static Pregunta getPreguntaPorIndice(int indice) {
+        return examen.getPreguntas().get(indice);
+
     }
 
     public static void liberarPreguntaOcupada() {
