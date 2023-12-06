@@ -21,6 +21,8 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.List;
 
 public class GUICliente extends JFrame {
@@ -30,14 +32,19 @@ public class GUICliente extends JFrame {
     JLabel lOpcionA, lOpcionB, lOpcionC, lOpcionD;
     JLabel lListaPreguntas, lEnunciado;
 
+    public JComboBox<String> getListaPreguntas() {
+        return listaPreguntas;
+    }
+
     JLabel lTiempoRestanteText;
     JLabel lTiempoRestante;
 
-    JComboBox<String> listaPreguntas;
+    private JComboBox<String> listaPreguntas;
 
     JTextArea tADecripcionPregunta;
     JRadioButton[] rbOpciones;
-    ButtonGroup grupoOpciones;
+
+    private ButtonGroup grupoOpciones;
 
     JButton bObtener, bCancelar, bResponder;
 
@@ -114,6 +121,32 @@ public class GUICliente extends JFrame {
         EventListener evento = new EventListener();
         bObtener.addActionListener(evento);
         bResponder.addActionListener(evento);
+        bCancelar.addActionListener(evento);
+
+        listaPreguntas.addItemListener(new ItemListener() {
+
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                // int indicePreguntaActual = ControladorCliente.getIndicePreguntaActual();
+
+                if (e.getStateChange() == e.SELECTED) {
+                    if (ControladorCliente.verificarEstadoLibre(listaPreguntas.getSelectedIndex())) {
+                        habilitarDesabilitarBObtener(true);
+                        habilitarDesabilitarBResponder(true);
+                    } else if (!ControladorCliente.verificarEstadoLibre(listaPreguntas.getSelectedIndex())) {
+                        habilitarDesabilitarBObtener(false);
+                        System.out.println(ControladorCliente.verificarEstadoLibre(listaPreguntas.getSelectedIndex()));
+                        System.out.println("entro");
+                        // habilitarDesabilitarBResponder(false);
+
+                    } else {
+                        habilitarDesabilitarBResponder(true);
+                    }
+                }
+
+            }
+
+        });
 
         pack();
         setVisible(true);
@@ -163,6 +196,14 @@ public class GUICliente extends JFrame {
         lEnunciado.setText("Enunciado: " + enunciado);
     }
 
+    public void habilitarDesabilitarBObtener(boolean bool) {
+        bObtener.setEnabled(bool);
+    }
+
+    public void habilitarDesabilitarBResponder(boolean bool) {
+        bResponder.setEnabled(bool);
+    }
+
     public class EventListener implements ActionListener {
 
         @Override
@@ -170,10 +211,22 @@ public class GUICliente extends JFrame {
             if (e.getSource() == bObtener) {
                 ControladorCliente.getIndicePreguntaActual(listaPreguntas.getSelectedItem().toString());
                 ControladorCliente.mostrarPregunta();
+                ControladorCliente.cambiarPreguntaAOcupada();
+                System.out.println(ControladorCliente.getIndicePreguntaActual());
+                listaPreguntas.setEnabled(false);
+
             }
             if (e.getSource() == bResponder) {
                 ControladorCliente.responderPregunta(grupoOpciones.getSelection().getActionCommand());
+                habilitarDesabilitarBResponder(false);
+                listaPreguntas.setEnabled(true);
             }
+            if (e.getSource() == bCancelar) {
+                ControladorCliente.liberarPreguntaOcupada();
+                habilitarDesabilitarBObtener(true);
+                listaPreguntas.setEnabled(true);
+            }
+
         }
     }
 

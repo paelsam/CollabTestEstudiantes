@@ -47,7 +47,8 @@ public class EscuchaMulticast extends Thread {
                 ControladorCliente.setInciarTimer(true);
                 ControladorCliente.setExamen(salida);
                 ControladorCliente.getGuiCliente().setItems(salida.getPreguntas().size());
-                System.out.println(salida.getPreguntas());
+                // ControladorCliente.verificarEstadoPreguntas();
+                // System.out.println(salida.getPreguntas());
             } catch (IOException e) {
                 System.out.println("Error al recibir datos: " + e);
                 cerrarMulticast();

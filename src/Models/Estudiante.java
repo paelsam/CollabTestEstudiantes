@@ -6,7 +6,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-
 public class Estudiante {
 
     EscuchaMulticast escuchaMulticast;
@@ -14,21 +13,22 @@ public class Estudiante {
     Socket estudiante;
     ObjectOutputStream salida;
     ObjectInputStream entrada;
-    String HOST; int PORT;
+
+    String HOST;
+    int PORT;
 
     public Estudiante(String HOST, int PORT) {
         this.HOST = HOST;
         this.PORT = PORT;
     }
 
-    public void ejecutarSocketEstudiante() 
-    {
+    public void ejecutarSocketEstudiante() {
         try {
             conectarAlServidor();
             obtenerFlujos();
             procesarConexion();
         } catch (IOException e) {
-            if ( estudiante.isClosed() ){
+            if (estudiante.isClosed()) {
                 System.out.println("El no hay conexión con el serivdor");
                 cerrarConexion();
             }
@@ -37,40 +37,35 @@ public class Estudiante {
         }
     }
 
-    public void conectarAlServidor() throws IOException 
-    {
+    public void conectarAlServidor() throws IOException {
         System.out.println("Intentando establecer conexión....");
         estudiante = new Socket("0.0.0.0", PORT);
         System.out.println("Conectado en: " + estudiante.getInetAddress());
         escuchaMulticast = new EscuchaMulticast();
     }
 
-    public void obtenerFlujos() throws IOException
-    {
+    public void obtenerFlujos() throws IOException {
         salida = new ObjectOutputStream(estudiante.getOutputStream());
         salida.flush();
         entrada = new ObjectInputStream(estudiante.getInputStream());
         System.out.println("Se obtuvieron los flujos E/S");
     }
 
-    public void procesarConexion() throws IOException
-    {
+    public void procesarConexion() throws IOException {
         Examen examen;
-        do 
-        {
+        do {
             try {
                 examen = (Examen) entrada.readObject();
                 // Recibiendo objeto examen
-                System.out.println(examen.getPreguntas().get(0).getEstado());
-                examen.getPreguntas().get(0).setEstado(1);
+                // System.out.println(examen.getPreguntas().get(0).getEstado());
+                // examen.getPreguntas().get(0).setEstado(1);
             } catch (ClassNotFoundException e) {
                 System.out.println("Error tipo de dato incorrecto: " + e);
             }
-        }while(true);
+        } while (true);
     }
 
-    public void cerrarConexion()
-    {
+    public void cerrarConexion() {
         System.out.println("Cerrando conexion....");
         try {
             estudiante.close();
@@ -86,7 +81,7 @@ public class Estudiante {
             salida.writeObject(examen);
             salida.flush();
             System.out.println("ESTUDIANTE: " + examen.getNombre());
-        } catch ( EOFException e ) {
+        } catch (EOFException e) {
             System.out.println("Error al mandar datos al servidor: " + e);
         }
     }
