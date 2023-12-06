@@ -30,6 +30,13 @@ import java.util.List;
 
 public class GUICliente extends JFrame {
 
+    private static Color background = new Color(10, 13, 34);
+    private static Color azul = new Color(41, 107, 170);
+    private static Color Verde = new Color(3, 166, 107);
+    private static Color blanco = new Color(252, 255, 255);
+    private static Color Amarillo = new Color(243, 172, 0);
+    private static Color Rojo = new Color(200, 25, 34);
+
     JPanel pNorte, pOpciones, pEnunciado, pPreguntas, pOeste, pResultado;
 
     JLabel lOpcionA, lOpcionB, lOpcionC, lOpcionD;
@@ -62,6 +69,7 @@ public class GUICliente extends JFrame {
         lListaPreguntas = new JLabel("Preguntas: ");
         listaPreguntas = new JComboBox<>();
         listaPreguntas.setPreferredSize(new Dimension(150, 30));
+        lListaPreguntas.setForeground(blanco);
         addItems(new String[] { "1", "2", "3" });
 
         // Label de opciones
@@ -70,14 +78,21 @@ public class GUICliente extends JFrame {
         lOpcionC = new JLabel("c.");
         lOpcionD = new JLabel("d.");
 
+        lOpcionA.setForeground(blanco);
+        lOpcionB.setForeground(blanco);
+        lOpcionC.setForeground(blanco);
+        lOpcionD.setForeground(blanco);
+
         grupoOpciones = new ButtonGroup();
         crearJRadioButtons();
         setRadioButtons(new String[] { "Ajá", "Ejé", "Ilo", "Ola" });
-
+    
         bObtener = new JButton("Obtener");
-        bObtener.setBackground(Color.GREEN);
+        bObtener.setBackground(Verde);
+        bObtener.setForeground(blanco);
         bCancelar = new JButton("Cancelar");
-        bCancelar.setBackground(Color.RED);
+        bCancelar.setBackground(Rojo);
+        bCancelar.setForeground(blanco);
 
         bResponder = new JButton("Responder");
         bResponder.setPreferredSize(new Dimension(200, 30));
@@ -86,14 +101,21 @@ public class GUICliente extends JFrame {
         lTiempoRestanteText = new JLabel("Tiempo restante:");
         lTiempoRestante = new JLabel("00:00");
         lTiempoRestante.setFont(new Font("Arial", Font.BOLD, 24));
+        lTiempoRestante.setForeground(blanco);
+        lTiempoRestanteText.setForeground(blanco);
 
         lEnunciado = new JLabel("Enunciado: ");
         tADecripcionPregunta = new JTextArea(20, 40);
-        tADecripcionPregunta.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        tADecripcionPregunta.setBorder(BorderFactory.createLineBorder(blanco));
+        lEnunciado.setForeground(Amarillo);
 
         pOeste = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         pEnunciado = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
         pPreguntas = new JPanel(new GridLayout(4, 2));
+
+        pOeste.setBackground(background);
+        pEnunciado.setBackground(background);
+        pPreguntas.setBackground(background);
 
         pPreguntas.add(lOpcionA);
         pPreguntas.add(rbOpciones[0]);
@@ -138,9 +160,6 @@ public class GUICliente extends JFrame {
                         habilitarDesabilitarBResponder(true);
                     } else if (!ControladorCliente.verificarEstadoLibre(listaPreguntas.getSelectedIndex())) {
                         habilitarDesabilitarBObtener(false);
-                        System.out.println(ControladorCliente.verificarEstadoLibre(listaPreguntas.getSelectedIndex()));
-                        System.out.println("entro");
-                        // habilitarDesabilitarBResponder(false);
 
                     } else {
                         habilitarDesabilitarBResponder(true);
@@ -189,6 +208,7 @@ public class GUICliente extends JFrame {
         for (int i = 0; i < 4; i++) {
             rbOpciones[i] = new JRadioButton();
             grupoOpciones.add(rbOpciones[i]);
+            
         }
     }
 
@@ -223,7 +243,7 @@ public class GUICliente extends JFrame {
     public void setTADecripcionPregunta(String descripcion) {
         tADecripcionPregunta.setText(descripcion);
     }
-    
+
     public void setTADecripcionResultados(String descripcion) {
         tADecripcionResultados.setText(descripcion);
     }
