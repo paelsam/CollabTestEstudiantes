@@ -199,15 +199,21 @@ public class ControladorCliente {
     }
 
     public static void liberarPreguntaOcupada() {
-        cambiarEstadoPregunta(0);
-        try {
-            estudiante.enviarExamen(examen);
-        } catch (IOException e) {
-            System.out.println("error al enviar examen desde LiberarPreguntaOcupada");
-            e.printStackTrace();
-
+        if (examen.getPreguntas().get(indicePreguntaActual).getEstado().equals("OCUPADA")) {
+            if (examen.getPreguntas().get(indicePreguntaActual).getEstado().equals("RESPONDIDA")) {
+                cambiarEstadoPregunta(2);
+                return;
+            }
+            cambiarEstadoPregunta(0);
+            try {
+                estudiante.enviarExamen(examen);
+            } catch (IOException e) {
+                System.out.println("Error al enviar examen desde LiberarPreguntaOcupada");
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("La pregunta no está ocupada y no puede ser liberada.");
         }
-
     }
 
 }

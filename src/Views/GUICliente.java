@@ -23,6 +23,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 public class GUICliente extends JFrame {
 
@@ -272,7 +274,7 @@ public class GUICliente extends JFrame {
         }
     }
 
-    public class EventListener implements ActionListener {
+    public class EventListener implements ActionListener, KeyListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -300,6 +302,35 @@ public class GUICliente extends JFrame {
 
             cambiarLabelEstadoPregunta(listaPreguntas.getSelectedIndex());
 
+        }
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            if (e.isAltDown() && e.getKeyCode() == KeyEvent.VK_R) {
+                ControladorCliente.responderPregunta(grupoOpciones.getSelection().getActionCommand());
+                habilitarDesabilitarBResponder(false);
+                listaPreguntas.setEnabled(true);
+            }
+
+            if (e.getKeyChar() == 'o' || e.getKeyChar() == 'O') {
+                ControladorCliente.getIndicePreguntaActual(listaPreguntas.getSelectedItem().toString());
+                ControladorCliente.mostrarPregunta();
+                ControladorCliente.cambiarPreguntaAOcupada();
+            }
+
+            if (e.isAltDown() && e.getKeyCode() == KeyEvent.VK_C) {
+                ControladorCliente.liberarPreguntaOcupada();
+                habilitarDesabilitarBObtener(true);
+                listaPreguntas.setEnabled(true);
+            }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
         }
     }
 
