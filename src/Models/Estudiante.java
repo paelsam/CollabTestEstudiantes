@@ -8,6 +8,8 @@ import java.net.Socket;
 
 public class Estudiante {
 
+    private String nombreEstudiante; 
+    
     EscuchaMulticast escuchaMulticast;
 
     Socket estudiante;
@@ -26,7 +28,7 @@ public class Estudiante {
         try {
             conectarAlServidor();
             obtenerFlujos();
-            procesarConexion();
+            while (!estudiante.isClosed()) {} // Bucle infinito para que no se cierre
         } catch (IOException e) {
             if (estudiante.isClosed()) {
                 System.out.println("El no hay conexión con el serivdor");
@@ -51,20 +53,6 @@ public class Estudiante {
         System.out.println("Se obtuvieron los flujos E/S");
     }
 
-    public void procesarConexion() throws IOException {
-        Examen examen;
-        do {
-            try {
-                examen = (Examen) entrada.readObject();
-                // Recibiendo objeto examen
-                // System.out.println(examen.getPreguntas().get(0).getEstado());
-                // examen.getPreguntas().get(0).setEstado(1);
-            } catch (ClassNotFoundException e) {
-                System.out.println("Error tipo de dato incorrecto: " + e);
-            }
-        } while (true);
-    }
-
     public void cerrarConexion() {
         System.out.println("Cerrando conexion....");
         try {
@@ -80,13 +68,8 @@ public class Estudiante {
         try {
             salida.writeObject(examen);
             salida.flush();
-            System.out.println("ESTUDIANTE: " + examen.getNombre());
         } catch (EOFException e) {
             System.out.println("Error al mandar datos al servidor: " + e);
         }
-    }
-
-    public EscuchaMulticast getEscuchaMulticast() {
-        return this.escuchaMulticast;
     }
 }

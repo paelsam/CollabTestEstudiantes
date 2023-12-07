@@ -17,6 +17,7 @@ public class Pregunta implements Serializable {
     private int estado;
     private String respondidoPor;
     private boolean esCorrecta;
+    private String opcionEscogida;
 
     public Pregunta(String enunciado, List<String> listadoOpciones, String opcionCorrecta, String descripcion) {
         this.enunciado = enunciado;
@@ -68,6 +69,10 @@ public class Pregunta implements Serializable {
         this.respondidoPor = respondidoPor;
     }
 
+    public void setOpcionEscogida(String opcionEscogida) {
+        this.opcionEscogida = opcionEscogida;
+    }
+
     public boolean getEsCorrecta() {
         return this.esCorrecta;
     }
@@ -87,9 +92,8 @@ public class Pregunta implements Serializable {
         + "Descripción: " + this.descripcion + "\n"
         + "Opciones: " + this.listaOpciones + "\n"
         + "Opción correcta: " + this.opcionCorrecta + "\n"
-        + "Es Correcta?: " + this.esCorrecta + "\n"
-        + "Estado preginta: " + this.getEstado() + "\n";
-
+        + "Opción escogida: " + this.opcionEscogida + "\n"
+        + "Es Correcta: " + this.esCorrecta + "\n";
     }
 
 }

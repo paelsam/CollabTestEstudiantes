@@ -44,14 +44,11 @@ public class EscuchaMulticast extends Thread {
                     ControladorCliente.iniciarCuentaRegresiva(salida.getTiempoDuracion());
                     ControladorCliente.setInciarTimer(true);
                 }
-                ControladorCliente.setInciarTimer(true);
                 ControladorCliente.setExamen(salida);
+                ControladorCliente.getGuiCliente().setLNombreExamen(salida.getNombre());
                 ControladorCliente.getGuiCliente().setItems(salida.getPreguntas().size());
                 ControladorCliente.getGuiCliente().getListaPreguntas()
                         .setSelectedIndex(ControladorCliente.getIndicePreguntaActual());
-                ;
-                // ControladorCliente.verificarEstadoPreguntas();
-                // System.out.println(salida.getPreguntas());
             } catch (IOException e) {
                 System.out.println("Error al recibir datos: " + e);
                 cerrarMulticast();

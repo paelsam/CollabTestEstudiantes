@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 
 import Controllers.ControladorCliente;
 
@@ -29,7 +30,6 @@ import java.awt.event.KeyListener;
 public class GUICliente extends JFrame {
 
     private static Color background = new Color(10, 13, 34);
-    private static Color azul = new Color(41, 107, 170);
     private static Color Verde = new Color(3, 166, 107);
     private static Color blanco = new Color(252, 255, 255);
     private static Color Amarillo = new Color(243, 172, 0);
@@ -37,7 +37,7 @@ public class GUICliente extends JFrame {
 
     JPanel pNorte, pOpciones, pEnunciado, pPreguntas, pOeste, pResultado;
 
-    JLabel lOpcionesText;
+    JLabel lOpcionesText, lNombreExamen;
     JLabel lListaPreguntas, lEnunciado, lEstadoPregunta, lResultados;
 
     JLabel lTiempoRestanteText;
@@ -54,13 +54,20 @@ public class GUICliente extends JFrame {
     JButton bObtener, bCancelar, bResponder, bCerrarVentana;
 
     public GUICliente() {
-        setSize(800, 500);
+        setSize(850, 500);
         setTitle("CollabTest: Estudiantes");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
     }
 
     public void iniciarComponentes() {
+
+        lNombreExamen = new JLabel("Examen: ");
+        lNombreExamen.setForeground(blanco);
+        lNombreExamen.setFont(new Font("Arial", Font.BOLD, 16));
+        lNombreExamen.setPreferredSize(new Dimension(230, 20));
+        
+
         lListaPreguntas = new JLabel("Preguntas: ");
         listaPreguntas = new JComboBox<>();
         listaPreguntas.setPreferredSize(new Dimension(150, 30));
@@ -81,23 +88,30 @@ public class GUICliente extends JFrame {
         bCancelar = new JButton("Cancelar");
         bCancelar.setBackground(Rojo);
         bCancelar.setForeground(blanco);
+        bCancelar.setEnabled(false); // Deshabilitado por defecto
 
         bResponder = new JButton("Responder");
+        bResponder.setEnabled(false); // Deshabilitado por defecto
         bResponder.setPreferredSize(new Dimension(200, 30));
         bResponder.setBackground(Color.ORANGE);
 
         lTiempoRestanteText = new JLabel("Tiempo restante:");
+        lTiempoRestanteText.setPreferredSize(new Dimension(230, 10));
+        lTiempoRestanteText.setHorizontalAlignment(SwingConstants.CENTER);
+
+
         lTiempoRestante = new JLabel("00:00");
-        lTiempoRestante.setFont(new Font("Arial", Font.BOLD, 24));
+        lTiempoRestante.setFont(new Font("Arial", Font.BOLD, 28));
         lTiempoRestante.setForeground(blanco);
         lTiempoRestanteText.setForeground(blanco);
 
         lEnunciado = new JLabel("Enunciado: ");
-        tADecripcionPregunta = new JTextArea(20, 40);
+        lEnunciado.setFont(new Font("Arial", Font.BOLD, 14));
+        tADecripcionPregunta = new JTextArea(20, 38);
         tADecripcionPregunta.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         lEnunciado.setForeground(Amarillo);
 
-        pOeste = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        pOeste = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 15));
         pEnunciado = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
         pPreguntas = new JPanel(new GridLayout(4, 2));
 
@@ -107,6 +121,8 @@ public class GUICliente extends JFrame {
 
         lEstadoPregunta = new JLabel("");
         lEstadoPregunta.setFont(new Font("Arial", Font.BOLD, 24));
+        lEstadoPregunta.setPreferredSize(new Dimension(230, 20));
+        lEstadoPregunta.setHorizontalAlignment(SwingConstants.CENTER);
         lEstadoPregunta.setBackground(blanco);
         lEstadoPregunta.setForeground(blanco);
 
@@ -116,6 +132,7 @@ public class GUICliente extends JFrame {
         pPreguntas.add(rbOpciones[3]);
 
         pOeste.setPreferredSize(new Dimension(250, 400));
+        pOeste.add(lNombreExamen);
         pOeste.add(lListaPreguntas);
         pOeste.add(listaPreguntas);
         pOeste.add(bObtener);
@@ -147,13 +164,10 @@ public class GUICliente extends JFrame {
                     if (ControladorCliente.verificarEstadoLibre(listaPreguntas.getSelectedIndex())) {
                         habilitarDesabilitarBObtener(true);
                         habilitarDesabilitarBResponder(true);
-                    } else if (!ControladorCliente.verificarEstadoLibre(listaPreguntas.getSelectedIndex())) {
-                        habilitarDesabilitarBObtener(false);
-                        System.out.println(ControladorCliente.verificarEstadoLibre(listaPreguntas.getSelectedIndex()));
                     } else {
-                        habilitarDesabilitarBResponder(true);
-                    }
-
+                        habilitarDesabilitarBObtener(false);
+                        habilitarDesabilitarBResponder(false);
+                    } 
                     cambiarLabelEstadoPregunta(listaPreguntas.getSelectedIndex());
                 }
 
@@ -181,7 +195,8 @@ public class GUICliente extends JFrame {
 
         pResultado = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
 
-        pResultado.setPreferredSize(new Dimension(450, this.getHeight()));
+        pResultado.setPreferredSize(new Dimension(500, this.getHeight()));
+        pResultado.setBackground(background);
         pResultado.add(lResultados);
         pResultado.add(scrollPanelResultados);
 
@@ -203,6 +218,8 @@ public class GUICliente extends JFrame {
         rbOpciones = new JRadioButton[4];
         for (int i = 0; i < 4; i++) {
             rbOpciones[i] = new JRadioButton();
+            rbOpciones[i].setBackground(background);
+            rbOpciones[i].setForeground(blanco);
             grupoOpciones.add(rbOpciones[i]);
         }
     }
@@ -211,6 +228,8 @@ public class GUICliente extends JFrame {
         for (int i = 0; i < opciones.length; i++) {
             rbOpciones[i].setText(opciones[i]);
             rbOpciones[i].setActionCommand(opciones[i]);
+            rbOpciones[i].setBackground(background);
+            rbOpciones[i].setForeground(blanco);
         }
     }
 
@@ -233,10 +252,6 @@ public class GUICliente extends JFrame {
 
     public void setTADescripcionPregunta(String descripcion) {
         tADecripcionPregunta.setText(descripcion);
-    }
-
-    public void toggleBResponder() {
-        bResponder.setEnabled(false);
     }
 
     public void setTADecripcionPregunta(String descripcion) {
@@ -262,15 +277,22 @@ public class GUICliente extends JFrame {
         bResponder.setEnabled(bool);
     }
 
+    public void setLNombreExamen(String nombreExamen) {
+        this.lNombreExamen.setText("Examen: " + nombreExamen);
+    }
+
     public void cambiarLabelEstadoPregunta(int indice) {
         int estado = ControladorCliente.getPreguntaPorIndice(indice).getEstadoIndex();
 
         if (estado == 0) {
             lEstadoPregunta.setText("LIBRE");
+            lEstadoPregunta.setForeground(Color.GREEN);
         } else if (estado == 1) {
             lEstadoPregunta.setText("OCUPADA");
+            lEstadoPregunta.setForeground(Color.ORANGE);
         } else if (estado == 2) {
             lEstadoPregunta.setText("RESPONDIDA");
+            lEstadoPregunta.setForeground(Rojo);
         }
     }
 
@@ -280,28 +302,35 @@ public class GUICliente extends JFrame {
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == bObtener) {
                 ControladorCliente.getIndicePreguntaActual(listaPreguntas.getSelectedItem().toString());
-                ControladorCliente.mostrarPregunta();
                 ControladorCliente.cambiarPreguntaAOcupada();
-                System.out.println(ControladorCliente.getIndicePreguntaActual());
+                ControladorCliente.mostrarPregunta();
                 listaPreguntas.setEnabled(false);
-
+                bCancelar.setEnabled(true);
             }
             if (e.getSource() == bResponder) {
                 ControladorCliente.responderPregunta(grupoOpciones.getSelection().getActionCommand());
                 habilitarDesabilitarBResponder(false);
+                bCancelar.setEnabled(false);
                 listaPreguntas.setEnabled(true);
+                setLEnunciado("");
+                setTADecripcionPregunta("");
+                setRadioButtons(new String[]{"", "", "", ""});
+                
             }
             if (e.getSource() == bCancelar) {
                 ControladorCliente.liberarPreguntaOcupada();
                 habilitarDesabilitarBObtener(true);
+                bCancelar.setEnabled(false);
+                bResponder.setEnabled(false);
                 listaPreguntas.setEnabled(true);
+                setLEnunciado("");
+                setTADecripcionPregunta("");
+                setRadioButtons(new String[]{"", "", "", ""});
             }
             if (e.getSource() == bCerrarVentana) {
                 dispose();
             }
-
             cambiarLabelEstadoPregunta(listaPreguntas.getSelectedIndex());
-
         }
 
         @Override
@@ -313,25 +342,37 @@ public class GUICliente extends JFrame {
             if (e.isAltDown() && e.getKeyCode() == KeyEvent.VK_R) {
                 ControladorCliente.responderPregunta(grupoOpciones.getSelection().getActionCommand());
                 habilitarDesabilitarBResponder(false);
+                bCancelar.setEnabled(false);
                 listaPreguntas.setEnabled(true);
+                bResponder.setEnabled(false);
+                setLEnunciado("");
+                setTADecripcionPregunta("");
+                setRadioButtons(new String[]{"", "", "", ""});
             }
 
             if (e.getKeyChar() == 'o' || e.getKeyChar() == 'O') {
                 ControladorCliente.getIndicePreguntaActual(listaPreguntas.getSelectedItem().toString());
-                ControladorCliente.mostrarPregunta();
                 ControladorCliente.cambiarPreguntaAOcupada();
+                ControladorCliente.mostrarPregunta();
+                bResponder.setEnabled(true);
+                listaPreguntas.setEnabled(false);
+                bCancelar.setEnabled(true);
             }
 
             if (e.isAltDown() && e.getKeyCode() == KeyEvent.VK_C) {
                 ControladorCliente.liberarPreguntaOcupada();
                 habilitarDesabilitarBObtener(true);
+                bCancelar.setEnabled(false);
+                bResponder.setEnabled(false);
                 listaPreguntas.setEnabled(true);
+                setLEnunciado("");
+                setTADecripcionPregunta("");
+                setRadioButtons(new String[]{"", "", "", ""});
             }
         }
 
         @Override
-        public void keyReleased(KeyEvent e) {
-        }
+        public void keyReleased(KeyEvent e) {}
     }
 
 }
